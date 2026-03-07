@@ -1,3 +1,12 @@
+// UC-01: User Registration
+// Goal: Allow new users to create an account with email, password, and profile info.
+// Use: Provides entry point into the system; ensures only registered users can manage contacts.
+// OOP: Encapsulation of user fields, validation logic, password hashing.
+// Patterns: Factory (FreeUser, PremiumUser), Builder (User object construction).
+
+// @author Developer
+// @version 1.0
+
 package com.seveneleven.mycontactsapp;
 
 import java.util.Scanner;
