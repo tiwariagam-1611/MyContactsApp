@@ -1,14 +1,14 @@
-// UC-07: Delete Contact
-// Goal: Allow logged-in users to remove a contact from their list with confirmation.
-// Use: Provides lifecycle management of contacts, ensuring users can maintain an up-to-date contact list.
+// UC-08: Bulk Operations
+// Goal: Allow logged-in users to perform operations on multiple contacts simultaneously (delete, tag, export).
+// Use: Provides efficiency and convenience by enabling batch processing of contact data.
 // Actor: Logged-in User
-// OOP Concepts: Lifecycle management of objects, cascade delete for related entities (e.g., phone numbers, emails).
-// Design Patterns: Observer Pattern to notify related components (e.g., UI, sync services) of deletion events.
-// Java Concepts: Soft delete vs hard delete approaches, exception handling for invalid operations, confirmation dialogs for safe user interaction.
-// Security: Ensures only authorized users can delete contacts, with safeguards against accidental or malicious removal.
+// OOP Concepts: Collection operations across multiple Contact objects, filtering predicates for selective bulk actions.
+// Design Patterns: Composite Pattern to treat individual contacts and groups uniformly, enabling consistent operations.
+// Java Concepts: Streams API for functional-style processing, lambda expressions for concise logic, method references for cleaner code, batch processing for performance optimization.
+// Security: Ensures bulk actions are confirmed and authorized, with safeguards against unintended mass deletions or exports.
 
 // @author Developer
-// @version 7.0
+// @version 8.0
 
 package com.seveneleven.mycontactsapp;
 
@@ -21,7 +21,7 @@ import com.seveneleven.mycontactsapp.auth.OAuth;
 import com.seveneleven.mycontactsapp.auth.SessionManager;
 import com.seveneleven.mycontactsapp.model.User;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -113,8 +113,9 @@ public class Main {
             System.out.println("4. View Contact Details");
             System.out.println("5. Edit Contact");
             System.out.println("6. Delete Contact");
-            System.out.println("7. Logout");
-            System.out.println("8. Exit");
+            System.out.println("7. Bulk Operations");
+            System.out.println("8. Logout");
+            System.out.println("9. Exit");
             System.out.print("Choose an option: ");
             String choice = scanner.nextLine();
 
@@ -183,11 +184,39 @@ public class Main {
                     break;
 
                 case "7":
+                    System.out.println("\n--- Bulk Operations ---");
+                    System.out.print("Enter contact names separated by commas: ");
+                    String bulkNames = scanner.nextLine();
+                    List<String> names = Arrays.stream(bulkNames.split(","))
+                                               .map(String::trim)
+                                               .toList();
+
+                    System.out.println("Choose bulk action: 1=Delete, 2=Tag, 3=Export");
+                    String action = scanner.nextLine();
+
+                    switch (action) {
+                        case "1":
+                            contactService.bulkDelete(names);
+                            break;
+                        case "2":
+                            System.out.print("Enter tag label: ");
+                            String label = scanner.nextLine();
+                            contactService.bulkTag(names, label);
+                            break;
+                        case "3":
+                            contactService.bulkExport(names);
+                            break;
+                        default:
+                            System.out.println("Invalid bulk action.");
+                    }
+                    break;
+
+                case "8":
                     new AuthenticationService(new BasicAuth()).logout();
                     loggedInMenu = false;
                     break;
 
-                case "8":
+                case "9":
                     System.out.println("Exiting MyContactsApp. Goodbye!");
                     System.exit(0);
                     break;

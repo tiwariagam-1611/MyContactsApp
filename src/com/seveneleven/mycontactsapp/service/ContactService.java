@@ -1,11 +1,14 @@
 package com.seveneleven.mycontactsapp.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
 import com.seveneleven.mycontactsapp.builder.ContactBuilder;
 import com.seveneleven.mycontactsapp.command.CommandManager;
 import com.seveneleven.mycontactsapp.command.EditContactCommand;
+import com.seveneleven.mycontactsapp.composite.ContactGroup;
+import com.seveneleven.mycontactsapp.composite.SingleContact;
 import com.seveneleven.mycontactsapp.decorator.BasicContactDisplay;
 import com.seveneleven.mycontactsapp.decorator.ContactDisplay;
 import com.seveneleven.mycontactsapp.decorator.PrettyContactDisplay;
@@ -86,6 +89,42 @@ public class ContactService {
             System.out.println("Contact not found: " + name);
         }
     }
+    public void bulkDelete(List<String> names) {
+        names.stream()
+             .map(n -> ContactRepository.getAllContacts().stream()
+                     .filter(c -> c.getName().equalsIgnoreCase(n))
+                     .findFirst())
+             .filter(Optional::isPresent)
+             .map(Optional::get)
+             .map(SingleContact::new)
+             .forEach(SingleContact::delete);
+    }
+
+    public void bulkTag(List<String> names, String label) {
+        names.stream()
+             .map(n -> ContactRepository.getAllContacts().stream()
+                     .filter(c -> c.getName().equalsIgnoreCase(n))
+                     .findFirst())
+             .filter(Optional::isPresent)
+             .map(Optional::get)
+             .map(SingleContact::new)
+             .forEach(c -> c.tag(label));
+    }
+
+    public void bulkExport(List<String> names) {
+        ContactGroup group = new ContactGroup();
+        names.stream()
+             .map(n -> ContactRepository.getAllContacts().stream()
+                     .filter(c -> c.getName().equalsIgnoreCase(n))
+                     .findFirst())
+             .filter(Optional::isPresent)
+             .map(Optional::get)
+             .map(SingleContact::new)
+             .forEach(group::add);
+
+        group.export();
+    }
+
 
 }
 
