@@ -1,14 +1,14 @@
-// UC-05: View Contact Details
-// Goal: Allow logged-in users to view complete information of a specific contact.
-// Use: Provides read-only access to stored contact data for reference and verification.
+// UC-06: Edit Contact
+// Goal: Allow logged-in users to modify existing contact information.
+// Use: Provides account maintenance and personalization by updating stored details.
 // Actor: Logged-in User
-// OOP Concepts: Getter methods for encapsulated fields, toString() override for formatted display.
-// Design Patterns: Decorator Pattern for adding flexible display formatters (e.g., styled output).
-// Java Concepts: String formatting (printf, format), Optional for nullable fields, immutable view objects for safe display.
-// Security: Ensures sensitive fields are displayed only to authorized users.
-// @author Developer
-// @version 5.0
+// OOP Concepts: Setter methods with validation logic, copy constructor for creating modified versions of contact objects.
+// Design Patterns: Command Pattern for supporting undo/redo operations, Memento Pattern for preserving and restoring previous states.
+// Java Concepts: Deep copy vs shallow copy distinctions, defensive copying to prevent unintended mutations, validation before committing state changes.
+// Security: Ensures only authorized users can edit contact details, with proper input sanitization.
 
+// @author Developer
+// @version 6.0
 
 package com.seveneleven.mycontactsapp;
 
@@ -33,7 +33,7 @@ public class Main {
         boolean running = true;
 
         while (running) {
-            System.out.println("\n=== MyContactApp ===");
+            System.out.println("\n=== MyContactsApp ===");
             System.out.println("1. Register");
             System.out.println("2. Login");
             System.out.println("3. Exit");
@@ -91,7 +91,7 @@ public class Main {
 
                 case "3": // Exit
                     running = false;
-                    System.out.println("Exiting MyContactApp. Goodbye!");
+                    System.out.println("Exiting MyContactsApp. Goodbye!");
                     break;
 
                 default:
@@ -111,8 +111,9 @@ public class Main {
             System.out.println("2. Create Contact");
             System.out.println("3. List Contacts");
             System.out.println("4. View Contact Details");
-            System.out.println("5. Logout");
-            System.out.println("6. Exit");
+            System.out.println("5. Edit Contact");
+            System.out.println("6. Logout");
+            System.out.println("7. Exit");
             System.out.print("Choose an option: ");
             String choice = scanner.nextLine();
 
@@ -163,12 +164,24 @@ public class Main {
                     break;
 
                 case "5":
+                    System.out.print("Enter contact name to edit: ");
+                    String editName = scanner.nextLine();
+                    System.out.print("Enter new name (leave blank to skip): ");
+                    String editNewName = scanner.nextLine();
+                    System.out.print("Enter new phone (leave blank to skip): ");
+                    String editNewPhone = scanner.nextLine();
+                    System.out.print("Enter new email (leave blank to skip): ");
+                    String editNewEmail = scanner.nextLine();
+                    contactService.editContact(editName, editNewName, editNewPhone, editNewEmail);
+                    break;
+
+                case "6":
                     new AuthenticationService(new BasicAuth()).logout();
                     loggedInMenu = false;
                     break;
 
-                case "6":
-                    System.out.println("Exiting MyContactApp. Goodbye!");
+                case "7":
+                    System.out.println("Exiting MyContactsApp. Goodbye!");
                     System.exit(0);
                     break;
 

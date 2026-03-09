@@ -17,5 +17,6 @@ public class UpdateNameCommand implements Command {
         user.setName(newName);
         System.out.println("Name updated to: " + newName);
     }
+    public void undo() {};
 
 }
