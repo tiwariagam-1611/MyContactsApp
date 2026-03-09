@@ -7,6 +7,7 @@ public abstract class Contact {
     private String name;
     private List<String> phones = new ArrayList<>();
     private List<String> emails = new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
 
     protected Contact(String name) {
         this.name = name;
@@ -23,12 +24,15 @@ public abstract class Contact {
     public String getName() { return name; }
     public List<String> getPhones() { return phones; }
     public List<String> getEmails() { return emails; }
+    public List<String> getTags() { return tags; }
 
     // Setters
     public void setName(String name) { this.name = name; }
     public void setPhones(List<String> phones) {
-        this.phones = new ArrayList<>(phones); // defensive copy
+        this.phones = new ArrayList<>(phones);
+        // defensive copy
     }
+    public void addTag(String tag) { tags.add(tag); }
     public void setEmails(List<String> emails) {
         this.emails = new ArrayList<>(emails); // defensive copy
     }

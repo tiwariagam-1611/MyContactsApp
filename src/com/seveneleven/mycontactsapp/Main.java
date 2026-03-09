@@ -1,14 +1,14 @@
-// UC-08: Bulk Operations
-// Goal: Allow logged-in users to perform operations on multiple contacts simultaneously (delete, tag, export).
-// Use: Provides efficiency and convenience by enabling batch processing of contact data.
+// UC-09: Search Contacts
+// Goal: Allow logged-in users to search contacts by name, phone number, email address, or tags.
+// Use: Provides efficient retrieval of specific contact information from the user’s contact list.
 // Actor: Logged-in User
-// OOP Concepts: Collection operations across multiple Contact objects, filtering predicates for selective bulk actions.
-// Design Patterns: Composite Pattern to treat individual contacts and groups uniformly, enabling consistent operations.
-// Java Concepts: Streams API for functional-style processing, lambda expressions for concise logic, method references for cleaner code, batch processing for performance optimization.
-// Security: Ensures bulk actions are confirmed and authorized, with safeguards against unintended mass deletions or exports.
+// OOP Concepts: SearchCriteria interface with multiple implementations, composition for building complex queries.
+// Design Patterns: Specification Pattern for constructing flexible search criteria, Chain of Responsibility for filter pipeline execution.
+// Java Concepts: Predicate interface for functional filtering, Stream API for concise search operations, regex pattern matching for advanced queries, case-insensitive comparison for user-friendly search.
+// Security: Ensures search results respect user privacy and access permissions.
 
 // @author Developer
-// @version 8.0
+// @version 9.0
 
 package com.seveneleven.mycontactsapp;
 
@@ -20,6 +20,7 @@ import com.seveneleven.mycontactsapp.auth.BasicAuth;
 import com.seveneleven.mycontactsapp.auth.OAuth;
 import com.seveneleven.mycontactsapp.auth.SessionManager;
 import com.seveneleven.mycontactsapp.model.User;
+import com.seveneleven.mycontactsapp.search.*;
 
 import java.util.*;
 
@@ -114,8 +115,9 @@ public class Main {
             System.out.println("5. Edit Contact");
             System.out.println("6. Delete Contact");
             System.out.println("7. Bulk Operations");
-            System.out.println("8. Logout");
-            System.out.println("9. Exit");
+            System.out.println("8. Search Contacts");
+            System.out.println("9. Logout");
+            System.out.println("10. Exit");
             System.out.print("Choose an option: ");
             String choice = scanner.nextLine();
 
@@ -212,11 +214,32 @@ public class Main {
                     break;
 
                 case "8":
+                    System.out.println("\n--- Search Contacts ---");
+                    System.out.println("Search by: 1=Name, 2=Phone, 3=Email, 4=Tag");
+                    String searchChoice = scanner.nextLine();
+                    System.out.print("Enter search value: ");
+                    String value = scanner.nextLine();
+
+                    SearchCriteria criteria = null;
+                    switch (searchChoice) {
+                        case "1": criteria = new NameCriteria(value); break;
+                        case "2": criteria = new PhoneCriteria(value); break;
+                        case "3": criteria = new EmailCriteria(value); break;
+                        case "4": criteria = new TagCriteria(value); break;
+                        default: System.out.println("Invalid search option."); break;
+                    }
+
+                    if (criteria != null) {
+                        contactService.searchContacts(criteria);
+                    }
+                    break;
+
+                case "9":
                     new AuthenticationService(new BasicAuth()).logout();
                     loggedInMenu = false;
                     break;
 
-                case "9":
+                case "10":
                     System.out.println("Exiting MyContactsApp. Goodbye!");
                     System.exit(0);
                     break;

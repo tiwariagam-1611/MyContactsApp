@@ -16,6 +16,7 @@ import com.seveneleven.mycontactsapp.model.Contact;
 import com.seveneleven.mycontactsapp.observer.LoggingObserver;
 import com.seveneleven.mycontactsapp.observer.ContactDeletionObserver;
 import com.seveneleven.mycontactsapp.repo.ContactRepository;
+import com.seveneleven.mycontactsapp.search.SearchCriteria;
 
 public class ContactService {
 	private final ContactDeletionObserver observer = new LoggingObserver();
@@ -110,6 +111,12 @@ public class ContactService {
              .map(SingleContact::new)
              .forEach(c -> c.tag(label));
     }
+    public void searchContacts(SearchCriteria criteria) {
+        ContactRepository.getAllContacts().stream()
+            .filter(criteria::matches)
+            .forEach(System.out::println);
+    }
+
 
     public void bulkExport(List<String> names) {
         ContactGroup group = new ContactGroup();
