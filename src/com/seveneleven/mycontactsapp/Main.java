@@ -1,14 +1,14 @@
-// UC-06: Edit Contact
-// Goal: Allow logged-in users to modify existing contact information.
-// Use: Provides account maintenance and personalization by updating stored details.
+// UC-07: Delete Contact
+// Goal: Allow logged-in users to remove a contact from their list with confirmation.
+// Use: Provides lifecycle management of contacts, ensuring users can maintain an up-to-date contact list.
 // Actor: Logged-in User
-// OOP Concepts: Setter methods with validation logic, copy constructor for creating modified versions of contact objects.
-// Design Patterns: Command Pattern for supporting undo/redo operations, Memento Pattern for preserving and restoring previous states.
-// Java Concepts: Deep copy vs shallow copy distinctions, defensive copying to prevent unintended mutations, validation before committing state changes.
-// Security: Ensures only authorized users can edit contact details, with proper input sanitization.
+// OOP Concepts: Lifecycle management of objects, cascade delete for related entities (e.g., phone numbers, emails).
+// Design Patterns: Observer Pattern to notify related components (e.g., UI, sync services) of deletion events.
+// Java Concepts: Soft delete vs hard delete approaches, exception handling for invalid operations, confirmation dialogs for safe user interaction.
+// Security: Ensures only authorized users can delete contacts, with safeguards against accidental or malicious removal.
 
 // @author Developer
-// @version 6.0
+// @version 7.0
 
 package com.seveneleven.mycontactsapp;
 
@@ -112,8 +112,9 @@ public class Main {
             System.out.println("3. List Contacts");
             System.out.println("4. View Contact Details");
             System.out.println("5. Edit Contact");
-            System.out.println("6. Logout");
-            System.out.println("7. Exit");
+            System.out.println("6. Delete Contact");
+            System.out.println("7. Logout");
+            System.out.println("8. Exit");
             System.out.print("Choose an option: ");
             String choice = scanner.nextLine();
 
@@ -176,11 +177,17 @@ public class Main {
                     break;
 
                 case "6":
+                    System.out.print("Enter contact name to delete: ");
+                    String delName = scanner.nextLine();
+                    contactService.deleteContact(delName);
+                    break;
+
+                case "7":
                     new AuthenticationService(new BasicAuth()).logout();
                     loggedInMenu = false;
                     break;
 
-                case "7":
+                case "8":
                     System.out.println("Exiting MyContactsApp. Goodbye!");
                     System.exit(0);
                     break;
