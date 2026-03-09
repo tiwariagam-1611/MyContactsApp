@@ -1,14 +1,14 @@
-// UC-04: Create Contact
-// Goal: Allow logged-in users to add a new contact with name, phone numbers, email addresses, and optional fields.
-// Use: Provides core functionality for building a personal or organizational contact list.
+// UC-05: View Contact Details
+// Goal: Allow logged-in users to view complete information of a specific contact.
+// Use: Provides read-only access to stored contact data for reference and verification.
 // Actor: Logged-in User
-// OOP Concepts: Contact class hierarchy (Person, Organization), composition (Contact has PhoneNumber, Email objects).
-// Design Patterns: Builder Pattern for constructing complex Contact objects, Factory Pattern for instantiating different contact types.
-// Java Concepts: Collections (List for multiple phones/emails), LocalDateTime for timestamps, UUID for unique IDs.
-// Security: Input validation for phone/email formats, safe handling of unique identifiers.
-
+// OOP Concepts: Getter methods for encapsulated fields, toString() override for formatted display.
+// Design Patterns: Decorator Pattern for adding flexible display formatters (e.g., styled output).
+// Java Concepts: String formatting (printf, format), Optional for nullable fields, immutable view objects for safe display.
+// Security: Ensures sensitive fields are displayed only to authorized users.
 // @author Developer
-// @version 4.0
+// @version 5.0
+
 
 package com.seveneleven.mycontactsapp;
 
@@ -110,8 +110,9 @@ public class Main {
             System.out.println("1. Update Profile");
             System.out.println("2. Create Contact");
             System.out.println("3. List Contacts");
-            System.out.println("4. Logout");
-            System.out.println("5. Exit");
+            System.out.println("4. View Contact Details");
+            System.out.println("5. Logout");
+            System.out.println("6. Exit");
             System.out.print("Choose an option: ");
             String choice = scanner.nextLine();
 
@@ -156,11 +157,17 @@ public class Main {
                     break;
 
                 case "4":
-                    new AuthenticationService(new BasicAuth()).logout(); // logout via SessionManager
-                    loggedInMenu = false;
+                    System.out.print("Enter contact name to view: ");
+                    String searchName = scanner.nextLine();
+                    contactService.viewContact(searchName);
                     break;
 
                 case "5":
+                    new AuthenticationService(new BasicAuth()).logout();
+                    loggedInMenu = false;
+                    break;
+
+                case "6":
                     System.out.println("Exiting MyContactApp. Goodbye!");
                     System.exit(0);
                     break;
