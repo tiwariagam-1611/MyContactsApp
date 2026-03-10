@@ -8,7 +8,7 @@ public abstract class Contact {
     private String name;
     private List<String> phones = new ArrayList<>();
     private List<String> emails = new ArrayList<>();
-    private List<String> tags = new ArrayList<>();
+    private Set<Tag> tags = new HashSet<>();
     private final LocalDate dateAdded;      // when contact was created
     private int contactCount;               // how often this contact is used
 
@@ -24,20 +24,26 @@ public abstract class Contact {
     public String getName() { return name; }
     public List<String> getPhones() { return phones; }
     public List<String> getEmails() { return emails; }
-    public List<String> getTags() { return tags; }
+    public Set<Tag> getTags() { return tags; };
     public LocalDate getDateAdded() { return dateAdded; }
     public int getContactCount() { return contactCount; }
+    
+
+
+
+
+    
 
     // Setters
     public void setName(String name) { this.name = name; }
     public void setPhones(List<String> phones) { this.phones = new ArrayList<>(phones); }
     public void setEmails(List<String> emails) { this.emails = new ArrayList<>(emails); }
-    public void setTags(List<String> tags) { this.tags = new ArrayList<>(tags); }
+    public void setTags(Set<Tag> tags) { this.tags = new HashSet<>(tags); }
 
     // Adders
     public void addPhone(String phone) { phones.add(phone); }
     public void addEmail(String email) { emails.add(email); }
-    public void addTag(String tag) { tags.add(tag); }
+    public void addTag(Tag tag) { tags.add(tag); }
 
     // Usage tracking
     public void incrementContactCount() { contactCount++; }

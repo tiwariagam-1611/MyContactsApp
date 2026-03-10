@@ -1,6 +1,7 @@
 package com.seveneleven.mycontactsapp.service;
 
 import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -15,6 +16,9 @@ import com.seveneleven.mycontactsapp.decorator.ContactDisplay;
 import com.seveneleven.mycontactsapp.decorator.PrettyContactDisplay;
 import com.seveneleven.mycontactsapp.filter.Filter;
 import com.seveneleven.mycontactsapp.model.Contact;
+import com.seveneleven.mycontactsapp.model.OrganizationContact;
+import com.seveneleven.mycontactsapp.model.PersonContact;
+import com.seveneleven.mycontactsapp.model.Tag;
 import com.seveneleven.mycontactsapp.observer.LoggingObserver;
 import com.seveneleven.mycontactsapp.observer.ContactDeletionObserver;
 import com.seveneleven.mycontactsapp.repo.ContactRepository;
@@ -22,17 +26,21 @@ import com.seveneleven.mycontactsapp.search.SearchCriteria;
 
 public class ContactService {
 	private final ContactDeletionObserver observer = new LoggingObserver();
-    public void createContact(String type, String name, String phone, String email) {
-        Contact contact = new ContactBuilder()
-                .setType(type)
-                .setName(name)
-                .addPhone(phone)
-                .addEmail(email)
-                .build();
-
-        ContactRepository.save(contact);
-        System.out.println("Created contact: " + contact);
-    }
+	public void createContact(String type, String name, String phone, String email, Set<Tag> tags) {
+	    Contact contact;
+	    if ("PERSON".equalsIgnoreCase(type)) {
+	        contact = new PersonContact(name);
+	    } else if ("ORG".equalsIgnoreCase(type)) {
+	        contact = new OrganizationContact(name);
+	    } else {
+	        throw new IllegalArgumentException("Invalid contact type");
+	    }
+	    contact.addPhone(phone);
+	    contact.addEmail(email);
+	    tags.forEach(contact::addTag);
+	    ContactRepository.save(contact);
+	    System.out.println("Created contact: " + contact);
+	}
 
     public void listContacts() {
         System.out.println("\n--- All Contacts ---");
@@ -104,20 +112,22 @@ public class ContactService {
     }
 
     public void bulkTag(List<String> names, String label) {
-        names.stream()
-             .map(n -> ContactRepository.getAllContacts().stream()
-                     .filter(c -> c.getName().equalsIgnoreCase(n))
-                     .findFirst())
-             .filter(Optional::isPresent)
-             .map(Optional::get)
-             .map(SingleContact::new)
-             .forEach(c -> c.tag(label));
+        TagService tagService = new TagService();
+        Tag tag = tagService.createTag(label);
+        for (String name : names) {
+            Contact contact = ContactRepository.findByName(name);
+            if (contact != null) {
+                contact.addTag(tag);
+                System.out.println("Tagged contact: " + contact);
+            }
+        }
     }
     public void searchContacts(SearchCriteria criteria) {
         ContactRepository.getAllContacts().stream()
             .filter(criteria::matches)
             .forEach(System.out::println);
     }
+    
 
 
     public void bulkExport(List<String> names) {

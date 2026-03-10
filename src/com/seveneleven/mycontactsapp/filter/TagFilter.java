@@ -12,7 +12,7 @@ public class TagFilter implements Filter {
     @Override
     public boolean apply(Contact contact) {
         return contact.getTags().stream()
-                .anyMatch(t -> t.toLowerCase().contains(tag));
+                .anyMatch(t -> t.getName().toLowerCase().contains(tag));
     }
 }
 

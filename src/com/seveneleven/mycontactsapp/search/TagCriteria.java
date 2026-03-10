@@ -1,6 +1,7 @@
 package com.seveneleven.mycontactsapp.search;
 
 import com.seveneleven.mycontactsapp.model.Contact;
+import com.seveneleven.mycontactsapp.model.Tag;
 
 public class TagCriteria implements SearchCriteria {
     private final String tag;
@@ -12,6 +13,7 @@ public class TagCriteria implements SearchCriteria {
     @Override
     public boolean matches(Contact contact) {
         return contact.getTags().stream()
+                .map(Tag::getName)
                 .anyMatch(t -> t.toLowerCase().contains(tag));
     }
 }
