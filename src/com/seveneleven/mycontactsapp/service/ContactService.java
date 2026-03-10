@@ -150,6 +150,16 @@ public class ContactService {
             .sorted(sorter)
             .forEach(System.out::println);
     }
+    public void applyTagsToContact(String contactName, Set<Tag> tags) {
+        Contact contact = ContactRepository.findByName(contactName);
+        if (contact != null) {
+            tags.forEach(contact::addTag);
+            System.out.println("Updated contact with tags: " + contact);
+        } else {
+            System.out.println("Contact not found.");
+        }
+    }
+
 
 
 }
