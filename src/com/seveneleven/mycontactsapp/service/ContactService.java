@@ -1,5 +1,6 @@
 package com.seveneleven.mycontactsapp.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -12,6 +13,7 @@ import com.seveneleven.mycontactsapp.composite.SingleContact;
 import com.seveneleven.mycontactsapp.decorator.BasicContactDisplay;
 import com.seveneleven.mycontactsapp.decorator.ContactDisplay;
 import com.seveneleven.mycontactsapp.decorator.PrettyContactDisplay;
+import com.seveneleven.mycontactsapp.filter.Filter;
 import com.seveneleven.mycontactsapp.model.Contact;
 import com.seveneleven.mycontactsapp.observer.LoggingObserver;
 import com.seveneleven.mycontactsapp.observer.ContactDeletionObserver;
@@ -130,6 +132,13 @@ public class ContactService {
              .forEach(group::add);
 
         group.export();
+    }
+    
+    public void advancedFilter(Filter filter, Comparator<Contact> sorter) {
+        ContactRepository.getAllContacts().stream()
+            .filter(filter::apply)
+            .sorted(sorter)
+            .forEach(System.out::println);
     }
 
 
